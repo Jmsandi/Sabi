@@ -1,36 +1,29 @@
-# B2 - OpenAlex Integration With Rate Limiting
+# B2 – OpenAlex Integration With Rate Limiting
 
-This is my answer to the B2 backend question. It is a small Node.js module that
-searches OpenAlex works, handles cursor pagination, applies request spacing,
-sets a timeout on each upstream request, retries transient failures, and returns
-records in the normalized shape requested by the assessment.
+A Node.js module that searches OpenAlex works, handles cursor pagination, spaces out requests, sets per-request timeouts, and retries on transient failures. Results come back in the normalized shape the assessment asks for. Works from the command line or as an import.
 
-The module can be used from the command line or imported from another Node.js
-service.
-
-## How to run
+## Running it
 
 ```bash
 npm install
 npm test
 ```
 
-Run a real OpenAlex search:
+Search OpenAlex directly:
 
 ```bash
 node src/index.js "community health workers"
 ```
 
-OpenAlex recommends including a contact email for more predictable service.
-This project supports that through `OPENALEX_MAILTO`:
+OpenAlex gives better service if you include a contact email:
 
 ```bash
 OPENALEX_MAILTO=you@example.org node src/index.js "malaria vaccine"
 ```
 
-## Returned record shape
+## Output shape
 
-Each OpenAlex work is normalized to this shape:
+Each work gets normalized to:
 
 ```json
 {
@@ -42,44 +35,36 @@ Each OpenAlex work is normalized to this shape:
 }
 ```
 
-OpenAlex stores abstracts as an inverted index. `normalizeOpenAlexWork.js`
-rebuilds that into normal text. Missing values are returned as `not reported`
-instead of being left blank.
+OpenAlex stores abstracts as inverted indexes — `normalizeOpenAlexWork.js` reconstructs them into plain text. Missing values come back as `"not reported"` instead of blanks.
 
 ## File structure
 
 ```text
 B2/
 ├── src/
-│   ├── index.js                  CLI entry point and module export
-│   ├── logger.js                 Small structured logger
-│   ├── normalizeOpenAlexWork.js  Converts OpenAlex records to the target shape
-│   ├── openAlexClient.js         Pagination, timeout, retry, and API calls
-│   ├── rateLimiter.js            Spaces requests so the API is not hammered
-│   └── retry.js                  Retry helpers for transient failures
+│   ├── index.js
+│   ├── logger.js
+│   ├── normalizeOpenAlexWork.js
+│   ├── openAlexClient.js
+│   ├── rateLimiter.js
+│   └── retry.js
 ├── test/
-│   └── openAlexClient.test.js    Pagination, retry, timeout, and mailto tests
+│   └── openAlexClient.test.js
 ├── .env.example
-├── package-lock.json
 └── package.json
 ```
 
-## Main behavior
+## How it works
 
-- Accepts a search string.
-- Uses cursor pagination.
-- Retrieves up to 500 records by default.
-- Uses a per-request timeout with `AbortController`.
-- Retries transient HTTP failures such as `429`, `500`, `502`, and network
-  errors such as dropped connections.
-- Waits between requests using a simple rate limiter.
-- Supports OpenAlex's polite-pool `mailto` parameter and `User-Agent` header.
-- Allows `fetch`, `sleep`, and `logger` to be injected so tests do not need to
-  call the real API.
+- Takes a search string, uses cursor pagination
+- Pulls up to 500 records by default
+- Per-request timeout via `AbortController`
+- Retries on `429`, `500`, `502`, and network drops
+- Rate limiter spaces out requests
+- Supports OpenAlex polite-pool `mailto` and `User-Agent` header
+- `fetch`, `sleep`, and `logger` are injectable for testing
 
 ## Configuration
-
-Most settings are passed into the `OpenAlexClient` constructor:
 
 ```js
 const client = new OpenAlexClient({
@@ -93,9 +78,8 @@ const client = new OpenAlexClient({
 });
 ```
 
-The defaults are set to keep the module useful without needing a config file.
+Defaults are set to be useful out of the box.
 
-## With more time
+## What I'd improve
 
-I would add fixture-based integration tests using recorded OpenAlex responses,
-plus a small cache for repeated queries during development or batch processing.
+Fixture-based integration tests using recorded OpenAlex responses, and a simple cache for repeated queries during dev or batch runs.
