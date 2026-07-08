@@ -1,14 +1,6 @@
 import type { AbstractSection, Study } from '../types';
 
-/**
- * Mock screening corpus.
- *
- * The assessment does not ship input data, so we seed a small set of realistic
- * study templates (with structured, section-labelled abstracts) and expand them
- * into a fuller review queue. In a real deployment `mockStudies` would be
- * replaced by an API call to the backend screening endpoint — nothing else in
- * the UI needs to change because everything depends on the `Study` type.
- */
+
 
 interface StudyTemplate {
   title: string;

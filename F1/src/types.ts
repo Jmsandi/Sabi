@@ -1,11 +1,4 @@
-/**
- * Domain model for the study screening workflow.
- *
- * A `Study` mirrors the metadata a systematic reviewer needs to make an
- * include / exclude / flag decision. Abstracts are stored as labelled
- * sections (Background, Methods, ...) so the reader can render them as a
- * structured document rather than a single wall of text.
- */
+
 
 export type Decision = 'include' | 'exclude' | 'flag';
 
