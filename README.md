@@ -1,22 +1,80 @@
 # Sabi Core Take-Home Assessment
 
-This repository answers the Sabi Core Software Engineer (AI & Research Platforms) assessment. The assessment asks for **one question per track**; the three required answers are:
+This repository contains my submission for the Sabi Core Software Engineer
+(AI & Research Platforms) take-home assessment.
 
-- `F1` - Frontend — React + TypeScript + Vite study screener interface
-- `B2` - Backend — OpenAlex integration with rate limiting
-- `A3` - AI — OpenAI data extraction pipeline from research paper PDFs
+I answered one question from each track:
 
-`B1` (Backend — PDF-upload document-ingestion endpoint with PostgreSQL/Prisma) is included as an **additional** solution to demonstrate file upload and database persistence.
+- `F1` - Study screener interface
+- `B2` - OpenAlex integration with rate limiting
+- `A3` - Data extraction from research papers
 
-The implementation uses mock data where the assessment did not provide input files (clearly labelled as mock). Each solution is isolated in its own folder, as requested by the submission checklist.
+Each answer is kept in its own folder so it can be reviewed and run separately.
+The projects all use Node 18+ and npm, following the stack requested in the
+assessment. Where the assessment did not provide input data, I used mock data
+and called that out in the relevant README.
+
+## Repository structure
+
+```text
+.
+├── F1/
+│   ├── src/
+│   │   ├── components/       React UI components for the screener
+│   │   ├── data/             Mock study records used by the UI
+│   │   ├── hooks/            localStorage and keyboard shortcut hooks
+│   │   ├── utils/            CSV export helper
+│   │   ├── StudyScreenerApp.tsx
+│   │   ├── main.tsx
+│   │   └── types.ts
+│   ├── README.md
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── B2/
+│   ├── src/
+│   │   ├── index.js
+│   │   ├── openAlexClient.js
+│   │   ├── normalizeOpenAlexWork.js
+│   │   ├── rateLimiter.js
+│   │   ├── retry.js
+│   │   └── logger.js
+│   ├── test/
+│   │   └── openAlexClient.test.js
+│   ├── README.md
+│   └── package.json
+│
+├── A3/
+│   ├── input/papers/         Put PDF files here when running the live pipeline
+│   ├── output/               CSV output is written here
+│   ├── src/
+│   │   ├── config/
+│   │   ├── errors/
+│   │   ├── pipeline/
+│   │   ├── prompts/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── test/
+│   ├── README.md
+│   └── package.json
+│
+├── SabiCore_Test_Questions.pdf
+└── README.md
+```
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 18 or newer
 - npm
-- An `OPENAI_API_KEY` environment variable only when running the live `A3` extraction pipeline
+- `OPENAI_API_KEY`, only needed for the live A3 extraction pipeline
 
-## Run F1
+No database is required for these three selected answers.
+
+## Quick start
+
+Run each project from its own folder.
+
+### F1 - frontend screener
 
 ```bash
 cd F1
@@ -24,23 +82,18 @@ npm install
 npm run dev
 ```
 
-Open the Vite URL shown in the terminal. Decisions are saved to `localStorage` and survive refreshes.
+Open the Vite URL printed in the terminal.
 
-## Run B2
+### B2 - OpenAlex client
 
 ```bash
 cd B2
 npm install
 npm test
-```
-
-Example usage:
-
-```bash
 node src/index.js "malaria vaccine"
 ```
 
-## Run A3
+### A3 - PDF extraction pipeline
 
 ```bash
 cd A3
@@ -48,32 +101,27 @@ npm install
 npm test
 ```
 
-To run the live pipeline, place up to five PDF files in `A3/input/papers`, set `OPENAI_API_KEY`, then run:
+To run without an API key:
+
+```bash
+EXTRACTION_PROVIDER=mock npm start
+```
+
+To run against OpenAI, place up to five PDFs in `A3/input/papers` and run:
 
 ```bash
 OPENAI_API_KEY=your_key npm start
 ```
 
-The CSV is written to `A3/output/extracted-studies.csv`. No API key is needed to try it — `EXTRACTION_PROVIDER=mock npm start` runs the whole pipeline offline.
+The CSV will be written to `A3/output/extracted-studies.csv`.
 
-## Run B1 (bonus)
+## Notes on scope
 
-```bash
-cd B1
-npm install
-npm test          # full suite runs without a database
-```
+I kept the three selected answers focused on the assessment prompts rather than
+adding extra features. The frontend uses a mock set of 50 studies because no
+dataset was provided. The OpenAlex client calls the real OpenAlex API. The A3
+pipeline can run in mock mode for review without an API key, and it uses OpenAI
+by default for the live provider.
 
-To run the live upload endpoint, start Postgres and migrate:
-
-```bash
-docker compose up -d
-cp .env.example .env
-npm run prisma:generate && npm run prisma:migrate
-npm start
-curl -F "file=@/path/to/paper.pdf" http://localhost:3001/documents
-```
-
-## Notes
-
-The `stitch_sabi_core_study_screener` folder holds the design mockups (screenshots, PRD, and generated HTML) used as reference for the F1 interface. The submitted solutions live in `F1`, `B2`, and `A3`.
+Each project README has more detail on design choices, file structure, and what
+I would improve with more time.
