@@ -1,4 +1,4 @@
-# Sabi Core Take-Home Assessment
+# Sabi Core 
 
 My submission for the Sabi Core Software Engineer (AI & Research Platforms) take-home.
 
