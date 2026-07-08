@@ -1,0 +1,25 @@
+export function buildExtractionPrompt({ fileName, paperText }) {
+  return [
+    'You are extracting data from a research paper for a systematic review.',
+    'Return only valid JSON. Do not include markdown.',
+    'Use only facts explicitly found in the supplied text.',
+    'If a field cannot be found, use exactly "not reported".',
+    'Never infer, guess, or hallucinate missing values.',
+    'resultDirection must be one of: positive, negative, mixed, not reported.',
+    '',
+    `File name: ${fileName}`,
+    '',
+    'Required JSON shape:',
+    '{',
+    '  "studyName": "string",',
+    '  "country": "string",',
+    '  "sampleSize": "string",',
+    '  "intervention": "string",',
+    '  "primaryOutcome": "string",',
+    '  "resultDirection": "positive | negative | mixed | not reported"',
+    '}',
+    '',
+    'Paper text:',
+    paperText.slice(0, 60000),
+  ].join('\n');
+}

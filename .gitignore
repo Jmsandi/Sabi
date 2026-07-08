@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.DS_Store
+.claude/
+
+A3/output/*.csv
+!A3/output/.gitkeep
+*.log

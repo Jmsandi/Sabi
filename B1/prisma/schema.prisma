@@ -1,0 +1,24 @@
+// B1 — document ingestion schema.
+// A single table of ingested documents. `doi` is unique so the same paper is
+// never stored twice; the endpoint returns the existing row on a DOI collision.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  doi       String?  @unique
+  title     String
+  abstract  String
+  authors   String[]
+  year      Int?
+  createdAt DateTime @default(now())
+
+  @@map("documents")
+}
