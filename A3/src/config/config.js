@@ -17,7 +17,7 @@ export const config = {
   },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
     requestTimeoutMs: Number(process.env.GEMINI_TIMEOUT_MS || 30000),
     maxAttempts: Number(process.env.GEMINI_MAX_ATTEMPTS || 3),
   },

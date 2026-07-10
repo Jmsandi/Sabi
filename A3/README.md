@@ -42,41 +42,44 @@ Output goes to `output/extracted-studies.csv`.
 
 ## File structure
 
-```text
-A3/
-├── input/
-│   └── papers/                    Drop PDFs here for live runs
-├── output/                        CSV output lands here
-├── src/
-│   ├── config/
-│   │   └── config.js
-│   ├── errors/
-│   │   └── customErrors.js
-│   ├── pipeline/
-│   │   └── pipeline.js
-│   ├── prompts/
-│   │   └── extractionPrompt.js
-│   ├── services/
-│   │   ├── csvService.js
-│   │   ├── extractionProvider.js
-│   │   ├── geminiService.js
-│   │   ├── loggerService.js
-│   │   ├── mockExtractionProvider.js
-│   │   ├── openAiService.js
-│   │   ├── pdfService.js
-│   │   └── validationService.js
-│   ├── utils/
-│   │   ├── json.js
-│   │   ├── retry.js
-│   │   └── sleep.js
-│   └── index.js
-├── test/
-│   ├── csvService.test.js
-│   ├── openAiService.test.js
-│   ├── pipeline.test.js
-│   └── validationService.test.js
-├── .env.example
-└── package.json
+```mermaid
+graph TD
+    A3["📁 A3/"]
+    A3 --> input["📁 input/"]
+    input --> papers["📁 papers/"]
+    A3 --> output["📁 output/"]
+    A3 --> src["📁 src/"]
+    A3 --> test["📁 test/"]
+    A3 --> envex[".env.example"]
+    A3 --> pkg["package.json"]
+
+    src --> cfg["📁 config/"]
+    cfg --> cfgjs["config.js"]
+    src --> err["📁 errors/"]
+    err --> errjs["customErrors.js"]
+    src --> pipe["📁 pipeline/"]
+    pipe --> pipejs["pipeline.js"]
+    src --> prom["📁 prompts/"]
+    prom --> promjs["extractionPrompt.js"]
+    src --> svc["📁 services/"]
+    svc --> csv["csvService.js"]
+    svc --> ep["extractionProvider.js"]
+    svc --> gem["geminiService.js"]
+    svc --> logsvc["loggerService.js"]
+    svc --> mock["mockExtractionProvider.js"]
+    svc --> oai["openAiService.js"]
+    svc --> pdfsvc["pdfService.js"]
+    svc --> valsvc["validationService.js"]
+    src --> util["📁 utils/"]
+    util --> jsonutil["json.js"]
+    util --> retryutil["retry.js"]
+    util --> sleeputil["sleep.js"]
+    src --> idx["index.js"]
+
+    test --> t1["csvService.test.js"]
+    test --> t2["openAiService.test.js"]
+    test --> t3["pipeline.test.js"]
+    test --> t4["validationService.test.js"]
 ```
 
 ## How the pipeline works
@@ -105,7 +108,7 @@ OUTPUT_CSV_PATH=output/extracted-studies.csv
 For Gemini:
 
 ```bash
-EXTRACTION_PROVIDER=gemini GEMINI_API_KEY=your_key npm start
+EXTRACTION_PROVIDER=gemini GEMINI_API_KEY=your_key GEMINI_MODEL=gemini-2.5-flash npm start
 ```
 
 ## What I'd improve

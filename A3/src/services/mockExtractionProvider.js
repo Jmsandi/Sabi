@@ -1,11 +1,6 @@
-/**
- * Offline extraction provider used for demos and local runs when no API key is
- * available (EXTRACTION_PROVIDER=mock). It performs no network calls and returns
- * deterministic, clearly-fabricated records so the full pipeline (PDF discovery
- * -> text extraction -> validation -> CSV) can be exercised end to end.
- *
- * The data is intentionally fake — it is NOT extracted from the PDF contents.
- */
+// A no-key, no-network provider for demos and tests. It hands back the same
+// canned records every time so the whole pipeline can run end to end. None of
+// this is read from the actual PDFs — it's all made up.
 const MOCK_RECORDS = [
   {
     studyName: 'Community Health Worker Malaria Intervention Trial',
@@ -24,7 +19,7 @@ const MOCK_RECORDS = [
     resultDirection: 'mixed',
   },
   {
-    // Deliberately sparse to demonstrate the "not reported" normalisation rule.
+    // left sparse on purpose, to show the "not reported" fallback doing its job
     studyName: 'Nutrition Supplementation Pilot',
     country: '',
     intervention: 'Micronutrient-fortified porridge',

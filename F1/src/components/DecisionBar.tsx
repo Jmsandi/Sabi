@@ -18,11 +18,8 @@ interface DecisionAction {
   selected: string;
 }
 
-/**
- * Colours are intentionally hard-coded here rather than pulled from the design
- * tokens: include/exclude/flag carry fixed semantic meaning (green/red/amber)
- * that must stay constant in both light and dark themes.
- */
+// Green/red/amber are hard-coded on purpose. Include/exclude/flag mean the same
+// thing in light and dark mode, so they stay off the theme tokens.
 const actions: DecisionAction[] = [
   {
     value: 'include',

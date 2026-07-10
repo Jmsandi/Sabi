@@ -1,15 +1,12 @@
 import type { DecisionMap, Study } from '../types';
 
-/** Wrap a value for safe CSV output (quote-escaped, always quoted). */
+// quote every field and double up any inner quotes — the boring, correct CSV rule
 function toCsvField(value: string | number): string {
   return `"${String(value).replace(/"/g, '""')}"`;
 }
 
-/**
- * Build a CSV of every study and its recorded screening decision, then trigger
- * a browser download. Studies without a decision are exported as "not reviewed"
- * so the output is always complete.
- */
+// Build a CSV of every study and its decision, then hand it to the browser as a
+// download. Undecided studies come out as "not reviewed" so no row is left blank.
 export function exportDecisionsToCsv(studies: Study[], decisions: DecisionMap): void {
   const header = ['Study ID', 'Title', 'Authors', 'Year', 'Source', 'Decision'];
 

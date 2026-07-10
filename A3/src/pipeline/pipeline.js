@@ -8,13 +8,9 @@ import { createFailedRecord, normalizeExtractedRecord } from '../services/valida
 
 const MAX_PAPERS = 5;
 
-/**
- * Orchestrates the extraction pipeline: discover PDFs -> extract text ->
- * ask the provider for structured data -> validate/normalise -> write CSV.
- *
- * All I/O collaborators are injectable (`deps`) so the orchestration can be
- * tested in isolation without a filesystem, real PDFs, or a live API key.
- */
+// Runs the whole thing: find PDFs, pull their text, ask the provider for
+// structured data, tidy it up, write the CSV. The I/O pieces are injectable so
+// the tests can drive it without a filesystem, real PDFs, or an API key.
 export async function runExtractionPipeline({ logger }, deps = {}) {
   const {
     settings = config,
@@ -50,7 +46,7 @@ export async function runExtractionPipeline({ logger }, deps = {}) {
       rows.push(normalizeExtractedRecord(extractedRecord));
       logger.info('Finished PDF', { fileName });
     } catch (error) {
-      // A single bad file must never abort the run — record it and move on.
+      // one bad file shouldn't sink the whole run — note it and carry on
       logger.error('PDF failed; continuing with remaining files', {
         fileName,
         error: error.message,

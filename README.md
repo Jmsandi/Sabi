@@ -12,55 +12,56 @@ Each answer lives in its own folder and can be run independently. Everything use
 
 ## Repo layout
 
-```text
-.
-├── F1/                    Study screener (React + Vite)
-│   ├── src/
-│   │   ├── components/    React UI components
-│   │   ├── data/          Mock study records
-│   │   ├── hooks/         localStorage and keyboard hooks
-│   │   ├── utils/         CSV export helper
-│   │   ├── StudyScreenerApp.tsx
-│   │   ├── index.css
-│   │   ├── main.tsx
-│   │   └── types.ts
-│   ├── index.html
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   ├── tsconfig.json
-│   └── vite.config.ts
-│
-├── B2/                    OpenAlex client
-│   ├── src/
-│   │   ├── index.js
-│   │   ├── openAlexClient.js
-│   │   ├── normalizeOpenAlexWork.js
-│   │   ├── rateLimiter.js
-│   │   ├── retry.js
-│   │   └── logger.js
-│   ├── test/
-│   │   └── openAlexClient.test.js
-│   ├── .env.example
-│   └── package.json
-│
-├── A3/                    PDF extraction pipeline
-│   ├── input/papers/      Drop PDFs here for live runs
-│   ├── output/            CSV output goes here
-│   ├── src/
-│   │   ├── config/
-│   │   ├── errors/
-│   │   ├── pipeline/
-│   │   ├── prompts/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── index.js
-│   ├── test/
-│   ├── .env.example
-│   └── package.json
-│
-├── .gitignore
-└── README.md
+```mermaid
+graph TD
+    root["📁 ."]
+    root --> F1["📁 F1/ – Study screener"]
+    root --> B2["📁 B2/ – OpenAlex client"]
+    root --> A3["📁 A3/ – PDF extraction"]
+    root --> gitignore[".gitignore"]
+    root --> rootreadme["README.md"]
+
+    F1 --> f1src["📁 src/"]
+    f1src --> f1comp["📁 components/"]
+    f1src --> f1data["📁 data/"]
+    f1src --> f1hooks["📁 hooks/"]
+    f1src --> f1utils["📁 utils/"]
+    f1src --> f1app["StudyScreenerApp.tsx"]
+    f1src --> f1css["index.css"]
+    f1src --> f1main["main.tsx"]
+    f1src --> f1types["types.ts"]
+    F1 --> f1html["index.html"]
+    F1 --> f1pkg["package.json"]
+    F1 --> f1post["postcss.config.js"]
+    F1 --> f1tw["tailwind.config.js"]
+    F1 --> f1ts["tsconfig.json"]
+    F1 --> f1vite["vite.config.ts"]
+
+    B2 --> b2src["📁 src/"]
+    b2src --> b2idx["index.js"]
+    b2src --> b2oac["openAlexClient.js"]
+    b2src --> b2norm["normalizeOpenAlexWork.js"]
+    b2src --> b2rl["rateLimiter.js"]
+    b2src --> b2ret["retry.js"]
+    b2src --> b2log["logger.js"]
+    B2 --> b2test["📁 test/"]
+    b2test --> b2tf["openAlexClient.test.js"]
+    B2 --> b2env[".env.example"]
+    B2 --> b2pkg["package.json"]
+
+    A3 --> a3input["📁 input/papers/"]
+    A3 --> a3output["📁 output/"]
+    A3 --> a3src["📁 src/"]
+    a3src --> a3cfg["📁 config/"]
+    a3src --> a3err["📁 errors/"]
+    a3src --> a3pipe["📁 pipeline/"]
+    a3src --> a3prom["📁 prompts/"]
+    a3src --> a3svc["📁 services/"]
+    a3src --> a3util["📁 utils/"]
+    a3src --> a3idx["index.js"]
+    A3 --> a3test["📁 test/"]
+    A3 --> a3env[".env.example"]
+    A3 --> a3pkg["package.json"]
 ```
 
 ## Requirements

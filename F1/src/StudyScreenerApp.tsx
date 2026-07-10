@@ -14,22 +14,35 @@ import type { Decision, DecisionMap } from './types';
 const DECISIONS_STORAGE_KEY = 'sabi-f1-decisions';
 const THEME_STORAGE_KEY = 'sabi-f1-theme';
 
-/**
- * Top-level screening workflow. Owns the small amount of session state
- * (current position, recorded decisions, theme) and routes between the two
- * screens of the flow: the per-study review screen and the completion summary
- * shown once every study has a decision.
- */
+function findNextUndecidedIndex(decisions: DecisionMap, startIndex: number): number {
+  for (let index = startIndex; index < mockStudies.length; index += 1) {
+    if (!decisions[mockStudies[index].id]) {
+      return index;
+    }
+  }
+
+  for (let index = 0; index < startIndex; index += 1) {
+    if (!decisions[mockStudies[index].id]) {
+      return index;
+    }
+  }
+
+  return Math.min(startIndex, mockStudies.length - 1);
+}
+
+// The whole workflow lives here: where we are in the queue, what's been
+// decided, the theme, and which of the two screens (review vs. done) to show.
 export function StudyScreenerApp() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [decisions, setDecisions] = useLocalStorageState<DecisionMap>(DECISIONS_STORAGE_KEY, {});
   const [theme, setTheme] = useLocalStorageState<'light' | 'dark'>(THEME_STORAGE_KEY, 'light');
-  // Lets the reviewer step back into the queue after reaching the summary.
+  // once they've hit the summary, this lets them dip back into the queue
   const [keepReviewing, setKeepReviewing] = useState(false);
 
   const currentStudy = mockStudies[currentIndex];
+  const studyIds = useMemo(() => new Set(mockStudies.map((study) => study.id)), []);
 
-  // Reflect the theme choice on <html> so the CSS custom properties switch.
+  // toggle the theme class on <html> — the CSS variables key off it
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
@@ -37,7 +50,10 @@ export function StudyScreenerApp() {
   }, [theme]);
 
   const counts = useMemo(() => {
-    const values = Object.values(decisions);
+    const values = Object.entries(decisions)
+      .filter(([studyId]) => studyIds.has(studyId))
+      .map(([, decision]) => decision);
+
     return {
       reviewed: values.length,
       total: mockStudies.length,
@@ -45,11 +61,17 @@ export function StudyScreenerApp() {
       excluded: values.filter((decision) => decision === 'exclude').length,
       flagged: values.filter((decision) => decision === 'flag').length,
     };
-  }, [decisions]);
+  }, [decisions, studyIds]);
 
   const percentage = counts.total === 0 ? 0 : Math.round((counts.reviewed / counts.total) * 100);
   const isComplete = counts.total > 0 && counts.reviewed === counts.total;
   const showCompleted = isComplete && !keepReviewing;
+
+  useEffect(() => {
+    if (!isComplete) {
+      setCurrentIndex((index) => findNextUndecidedIndex(decisions, index));
+    }
+  }, [decisions, isComplete]);
 
   const goToNext = useCallback(() => {
     setCurrentIndex((index) => Math.min(index + 1, mockStudies.length - 1));
@@ -61,11 +83,13 @@ export function StudyScreenerApp() {
 
   const recordDecision = useCallback(
     (decision: Decision) => {
-      setDecisions((current) => ({ ...current, [currentStudy.id]: decision }));
-      // Auto-advance to keep the reviewer in a steady rhythm.
-      goToNext();
+      setDecisions((current) => {
+        const nextDecisions = { ...current, [currentStudy.id]: decision };
+        setCurrentIndex(findNextUndecidedIndex(nextDecisions, currentIndex + 1));
+        return nextDecisions;
+      });
     },
-    [currentStudy.id, setDecisions, goToNext],
+    [currentIndex, currentStudy.id, setDecisions],
   );
 
   const toggleTheme = useCallback(() => {
@@ -81,7 +105,7 @@ export function StudyScreenerApp() {
     setCurrentIndex(0);
   }, []);
 
-  // Only wire keyboard shortcuts to the review screen, not the summary.
+  // shortcuts only make sense on the review screen, not the summary
   useKeyboardShortcuts({
     onDecision: showCompleted ? () => {} : recordDecision,
     onPrevious: showCompleted ? () => {} : goToPrevious,

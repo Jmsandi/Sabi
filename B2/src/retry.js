@@ -11,10 +11,8 @@ export function isRetryableStatus(statusCode) {
   return RETRYABLE_STATUS_CODES.has(statusCode);
 }
 
-/**
- * A failed `fetch()` rejects with a TypeError ("fetch failed"), often wrapping a
- * low-level socket error. Treat those as transient and worth retrying.
- */
+// A dead connection makes fetch throw a TypeError ("fetch failed"), usually
+// wrapping a socket error underneath. Worth another shot.
 export function isNetworkError(error) {
   if (!error) {
     return false;

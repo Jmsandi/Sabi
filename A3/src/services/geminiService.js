@@ -64,7 +64,10 @@ export class GeminiExtractionProvider {
       });
 
       if (!response.ok) {
-        const error = new AiProviderError(`Gemini request failed with status ${response.status}`);
+        const detail = typeof response.text === 'function' ? await response.text() : '';
+        const error = new AiProviderError(
+          `Gemini request failed with status ${response.status}${detail ? `: ${detail}` : ''}`,
+        );
         error.retryable = RETRYABLE_STATUS_CODES.has(response.status);
         throw error;
       }

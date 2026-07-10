@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
-/**
- * A `useState` that transparently persists to (and hydrates from) localStorage.
- * Reviewer decisions and the theme choice survive a page refresh, which is a
- * hard requirement for the screening workflow.
- */
+// A useState that quietly mirrors itself into localStorage, so decisions and
+// the theme survive a refresh — which the prompt asks for.
 export function useLocalStorageState<T>(
   key: string,
   initialValue: T,
@@ -15,7 +12,7 @@ export function useLocalStorageState<T>(
       const storedValue = window.localStorage.getItem(key);
       return storedValue ? (JSON.parse(storedValue) as T) : initialValue;
     } catch {
-      // Corrupted or unavailable storage should never break the app.
+      // bad or unavailable storage shouldn't take the app down
       return initialValue;
     }
   });
@@ -24,7 +21,7 @@ export function useLocalStorageState<T>(
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // Ignore quota / private-mode write failures.
+      // private mode or a full quota — nothing to do but not crash
     }
   }, [key, value]);
 

@@ -21,39 +21,80 @@ npm run build
 - Include, exclude, and flag decisions per study
 - Keyboard shortcuts: `I` include, `E` exclude, `F` flag, arrow keys to navigate
 - Progress tracking across the full queue
+- Resumes at the next unreviewed study after a refresh
 - Completion summary once every study has a decision
 - Light/dark theme toggle (persisted locally)
 - Responsive layout for desktop and smaller screens
 
+## Input and output
+
+The input is the mock study list in `src/data/mockStudies.ts`. Each study has:
+
+```ts
+{
+  id: string;
+  title: string;
+  authors: string;
+  shortAuthors: string;
+  year: number;
+  source: string;
+  journal: string;
+  tags: string[];
+  status: string;
+  abstract: { label: string; text: string }[];
+}
+```
+
+The main output is the saved decision map in browser `localStorage` under
+`sabi-f1-decisions`:
+
+```json
+{
+  "study-42": "include",
+  "study-43": "exclude",
+  "study-44": "flag"
+}
+```
+
+When all studies are reviewed, the `Export Decisions` button downloads
+`sabi-screening-decisions.csv` with this shape:
+
+```csv
+"Study ID","Title","Authors","Year","Source","Decision"
+"study-42","Efficacy of AI-driven diagnostics in systematic reviews","Chen, Y., Patel, K., & Smith, J.","2020","PubMed","include"
+```
+
 ## File structure
 
-```text
-F1/
-├── src/
-│   ├── components/
-│   │   ├── AbstractReader.tsx
-│   │   ├── CompletedView.tsx
-│   │   ├── DecisionBar.tsx
-│   │   ├── ProgressBar.tsx
-│   │   ├── StudyDetails.tsx
-│   │   └── TopBar.tsx
-│   ├── data/
-│   │   └── mockStudies.ts
-│   ├── hooks/
-│   │   ├── useKeyboardShortcuts.ts
-│   │   └── useLocalStorageState.ts
-│   ├── utils/
-│   │   └── exportCsv.ts
-│   ├── StudyScreenerApp.tsx
-│   ├── index.css
-│   ├── main.tsx
-│   └── types.ts
-├── index.html
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-├── tsconfig.json
-└── vite.config.ts
+```mermaid
+graph TD
+    F1["📁 F1/"]
+    F1 --> src["📁 src/"]
+    F1 --> html["index.html"]
+    F1 --> pkg["package.json"]
+    F1 --> post["postcss.config.js"]
+    F1 --> tw["tailwind.config.js"]
+    F1 --> tsconf["tsconfig.json"]
+    F1 --> vite["vite.config.ts"]
+
+    src --> comp["📁 components/"]
+    comp --> abr["AbstractReader.tsx"]
+    comp --> cv["CompletedView.tsx"]
+    comp --> db["DecisionBar.tsx"]
+    comp --> pb["ProgressBar.tsx"]
+    comp --> sd["StudyDetails.tsx"]
+    comp --> tb["TopBar.tsx"]
+    src --> data["📁 data/"]
+    data --> mock["mockStudies.ts"]
+    src --> hooks["📁 hooks/"]
+    hooks --> kb["useKeyboardShortcuts.ts"]
+    hooks --> ls["useLocalStorageState.ts"]
+    src --> utils["📁 utils/"]
+    utils --> exp["exportCsv.ts"]
+    src --> app["StudyScreenerApp.tsx"]
+    src --> css["index.css"]
+    src --> main["main.tsx"]
+    src --> types["types.ts"]
 ```
 
 ## Design decisions

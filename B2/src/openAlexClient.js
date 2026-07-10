@@ -11,8 +11,7 @@ const DEFAULT_CONFIG = {
   rateLimitIntervalMs: 120,
   maxAttempts: 3,
   retryBaseDelayMs: 500,
-  // OpenAlex "polite pool": supplying a contact email gets faster, more
-  // predictable rate limits. Set OPENALEX_MAILTO to opt in.
+  // hand OpenAlex a contact email and you land in the faster "polite pool"
   mailto: process.env.OPENALEX_MAILTO || null,
 };
 
@@ -83,8 +82,7 @@ export class OpenAlexClient {
         baseDelayMs: this.config.retryBaseDelayMs,
         sleep: this.sleep,
         logger: this.logger,
-        // Retry timeouts, low-level network failures, and transient HTTP
-        // statuses; never retry a 4xx that signals a bad request.
+        // retry timeouts, dropped connections and flaky 5xx — never a 4xx
         shouldRetry: (error) =>
           error.name === 'AbortError' ||
           isNetworkError(error) ||
@@ -98,7 +96,7 @@ export class OpenAlexClient {
     const timeoutId = setTimeout(() => controller.abort(), this.config.requestTimeoutMs);
     const headers = { Accept: 'application/json' };
     if (this.config.mailto) {
-      // A descriptive User-Agent with contact is OpenAlex's recommended courtesy.
+      // OpenAlex appreciates a User-Agent it can trace back to a human
       headers['User-Agent'] = `SabiCore-B2/1.0 (mailto:${this.config.mailto})`;
     }
 

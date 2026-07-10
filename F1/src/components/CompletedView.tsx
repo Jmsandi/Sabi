@@ -23,11 +23,7 @@ const statCards: StatCard[] = [
   { key: 'flagged', label: 'Flagged', icon: 'flag', color: 'text-[#d97706]' },
 ];
 
-/**
- * "All studies reviewed" completion screen. Shown once every study in the queue
- * has a recorded decision. Surfaces the decision breakdown and lets the reviewer
- * export the results or jump back into the queue to revise a call.
- */
+// The "you're done" screen — turns up once every study has a call on it.
 export function CompletedView({ counts, onExport, onReviewAgain }: CompletedViewProps) {
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin">
@@ -38,8 +34,8 @@ export function CompletedView({ counts, onExport, onReviewAgain }: CompletedView
 
         <h2 className="font-display text-display text-on-surface mb-sm">All studies reviewed</h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg mb-xl">
-          You have successfully completed the primary screening phase. Your decisions are ready for
-          the next stage of the systematic review.
+          That's the whole queue screened. Every decision is saved and ready to hand off to the next
+          stage of the review.
         </p>
 
         <div className="w-full mb-xl">

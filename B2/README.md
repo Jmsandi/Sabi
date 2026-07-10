@@ -39,19 +39,22 @@ OpenAlex stores abstracts as inverted indexes — `normalizeOpenAlexWork.js` rec
 
 ## File structure
 
-```text
-B2/
-├── src/
-│   ├── index.js
-│   ├── logger.js
-│   ├── normalizeOpenAlexWork.js
-│   ├── openAlexClient.js
-│   ├── rateLimiter.js
-│   └── retry.js
-├── test/
-│   └── openAlexClient.test.js
-├── .env.example
-└── package.json
+```mermaid
+graph TD
+    B2["📁 B2/"]
+    B2 --> src["📁 src/"]
+    B2 --> test["📁 test/"]
+    B2 --> envex[".env.example"]
+    B2 --> pkg["package.json"]
+
+    src --> idx["index.js"]
+    src --> log["logger.js"]
+    src --> norm["normalizeOpenAlexWork.js"]
+    src --> oac["openAlexClient.js"]
+    src --> rl["rateLimiter.js"]
+    src --> ret["retry.js"]
+
+    test --> testfile["openAlexClient.test.js"]
 ```
 
 ## How it works

@@ -1,7 +1,7 @@
 import type { AbstractSection, Study } from '../types';
 
-
-
+// Mock data — the assessment ships no dataset, so these are a few realistic
+// study templates fanned out into a 50-item queue. All of it is invented.
 interface StudyTemplate {
   title: string;
   shortAuthors: string;
@@ -151,10 +151,8 @@ const templates: StudyTemplate[] = [
 
 const statuses = ['Pending', 'Pending', 'Pending', 'In review'];
 
-/**
- * Deterministic queue built by cycling the templates. Deterministic ids and
- * ordering keep localStorage decisions stable across reloads.
- */
+// Cycle the templates into a fixed 50-study queue. Same ids, same order every
+// load, so decisions saved in localStorage still line up after a refresh.
 export const mockStudies: Study[] = Array.from({ length: 50 }, (_, index) => {
   const template = templates[index % templates.length];
   const studyNumber = String(index + 42);

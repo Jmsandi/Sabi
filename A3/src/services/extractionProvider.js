@@ -3,11 +3,8 @@ import { GeminiExtractionProvider } from './geminiService.js';
 import { MockExtractionProvider } from './mockExtractionProvider.js';
 import { OpenAiExtractionProvider } from './openAiService.js';
 
-/**
- * Provider factory — the single place to swap the LLM backend. OpenAI is the
- * default provider because the assessment asks for OpenAI, while Gemini remains
- * available as an alternate implementation behind the same boundary.
- */
+// The one place that knows which LLM backend we're on. OpenAI is the default
+// (it's what the assessment asks for); Gemini and mock sit behind the same door.
 export function createExtractionProvider({ logger }) {
   switch (config.providerName) {
     case 'openai':

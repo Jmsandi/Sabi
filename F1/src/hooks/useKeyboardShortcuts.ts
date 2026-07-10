@@ -13,18 +13,12 @@ const decisionKeys: Record<string, Decision> = {
   f: 'flag',
 };
 
-/**
- * Global keyboard shortcuts for the screening workflow:
- *   I / E / F  -> include / exclude / flag
- *   ArrowLeft  -> previous study
- *   ArrowRight -> next study
- *
- * Shortcuts are suppressed while the user is typing in a form control so the
- * search box and future note fields keep working normally.
- */
+// I/E/F to decide, arrow keys to move. The point is that a reviewer can fly
+// through the whole queue without ever reaching for the mouse.
 export function useKeyboardShortcuts({ onDecision, onPrevious, onNext }: KeyboardHandlers): void {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent): void {
+      // don't steal keystrokes while someone's typing in a field
       const activeTag = document.activeElement?.tagName ?? '';
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag)) {
         return;
